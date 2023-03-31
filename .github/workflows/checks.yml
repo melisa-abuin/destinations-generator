@@ -1,0 +1,17 @@
+name: CI
+on: [push]
+jobs:
+  build:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js version 16.x
+        uses: actions/setup-node@v3.6.0
+        with:
+          node-version: 16.x
+      - run: yarn install
+      - run: yarn typecheck
+      - run: yarn lint
+      - run: yarn test
+      - run: yarn build
