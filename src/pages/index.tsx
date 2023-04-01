@@ -21,7 +21,7 @@ export default function Home() {
             <h1 className="font-bold pb-12 text-3xl">Destinations</h1>
             <p className="pb-8">
               Here you can search for the best places to go for one day from
-              your location. Start writing the city and we'll do the rest!
+              your location. Start writing the city and we&apos;ll do the rest!
             </p>
             <Search onSubmit={onSearch} />
           </div>
