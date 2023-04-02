@@ -1,12 +1,13 @@
 import { baseApi } from '@/constants'
+import { ChatCompletition } from '@/interfaces/chatCompletition'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse<Array<string> | Error>
 ) {
   const promptText = `Name the three best places to visit from ${req.query.departingCity} in one day.
-                      Write the cities as a list. Do not add extra information apart from names.
+                      Write the cities as a list, and add a small description for each place.
                     `
 
   const createChatCompletionReqParams = {
@@ -14,7 +15,7 @@ export default async function handler(
     messages: [{ role: 'user', content: promptText }],
   }
 
-  const response = await fetch(baseApi, {
+  const response: Error | ChatCompletition = await fetch(baseApi, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -27,9 +28,12 @@ export default async function handler(
       throw new Error(error)
     })
 
-  if (response.error) {
-    return new Error(response.error)
+  if (response instanceof Error) {
+    res.status(400).json(response)
+    return
   }
 
-  res.status(200).json(response)
+  const responseToShow = response.choices[0].message.content.split('\n')
+
+  res.status(200).json(responseToShow)
 }
